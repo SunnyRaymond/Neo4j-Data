@@ -132,14 +132,4 @@ CALL apoc.export.csv.query(
 ```
 - Export subgraph results for **external analysis** (e.g., Gephi or Python).
 
----
 
-### **Use Cases for Subgraph Matching in Blockchain:**
-- **Fraud Detection** – Identify laundering rings and complex fraud chains.  
-- **Compliance** – Detect transactions violating AML (Anti-Money Laundering) rules.  
-- **Behavioral Analysis** – Spot unusual transfer patterns linked to illicit activities.  
-- **Fund Tracking** – Follow the flow of funds from hackers to exchanges.  
-
----
-
-Would you like to dive deeper into **multi-hop detection** or **graph algorithms** to enhance the subgraph matching process?
