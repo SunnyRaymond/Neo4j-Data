@@ -18,8 +18,10 @@ MERGE (from)-[t:TRANSACTION {hash: row.hash}]->(to)
 SET t.value = row.value,  // Store as string
     t.timeStamp = toInteger(row.timeStamp),
     t.blockNumber = toInteger(row.blockNumber),
+    t.tokenSymbol = row.tokenSymbol,
     t.gasPrice = toInteger(row.gasPrice),
     t.gasUsed = toInteger(row.gasUsed);
+    
 ```
 
 ### **Understanding Subgraph Matching:**
