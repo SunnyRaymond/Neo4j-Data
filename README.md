@@ -19,6 +19,8 @@ SET t.value = row.value,  // Store as string
     t.timeStamp = toInteger(row.timeStamp),
     t.blockNumber = toInteger(row.blockNumber),
     t.tokenSymbol = row.tokenSymbol,
+    t.contractAddress = row.contractAddress,
+    t.isError = toInteger(row.isError),
     t.gasPrice = toInteger(row.gasPrice),
     t.gasUsed = toInteger(row.gasUsed);
     
