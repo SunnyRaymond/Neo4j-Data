@@ -15,7 +15,7 @@ LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/SunnyRaymond/Neo4j
 MATCH (from:Account {address: row.from})
 MATCH (to:Account {address: row.to})
 MERGE (from)-[t:TRANSACTION {hash: row.hash}]->(to)
-SET t.value = row.value,  // Store as string
+SET t.value = toInteger(row.value),
     t.timeStamp = toInteger(row.timeStamp),
     t.blockNumber = toInteger(row.blockNumber),
     t.tokenSymbol = row.tokenSymbol,
@@ -23,7 +23,7 @@ SET t.value = row.value,  // Store as string
     t.isError = toInteger(row.isError),
     t.gasPrice = toInteger(row.gasPrice),
     t.gasUsed = toInteger(row.gasUsed);
-    
+
 ```
 
 ### **Understanding Subgraph Matching:**
