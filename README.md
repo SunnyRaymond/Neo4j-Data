@@ -29,9 +29,12 @@ SET t.value = toInteger(row.value),
 set in degree and out degree
 ```cypher
 MATCH (n:Account)
-WITH n, size((n)<-[:TRANSACTION]-()) AS inDegree, size((n)-[:TRANSACTION]->()) AS outDegree
+OPTIONAL MATCH (n)<-[inRel:TRANSACTION]-()
+OPTIONAL MATCH (n)-[outRel:TRANSACTION]->()
+WITH n, count(inRel) AS inDegree, count(outRel) AS outDegree
 SET n.inDegree = inDegree, n.outDegree = outDegree
 RETURN n
+
 ```
 
 
