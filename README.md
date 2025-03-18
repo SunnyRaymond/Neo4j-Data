@@ -44,7 +44,7 @@
 nodes
 
 ```cypher
-CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/moneylaundering.json") YIELD value
+CALL apoc.load.json("[https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/moneylaundering.json](https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/lesmiserables.json)") YIELD value
 WITH value.nodes AS nodes
 UNWIND nodes AS node
 MERGE (a:Account {address: node.address})
