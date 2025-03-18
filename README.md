@@ -7,16 +7,17 @@ Subgraph matching in Neo4j allows you to detect patterns within your blockchain 
 load the ml dataset base on json
 
 ```cypher
-// Load JSON file from URL (adjust the URL accordingly)
+// load nodes
 CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/moneylaundering.json") YIELD value
-WITH value.nodes AS nodes, value.edges AS edges
-// Create nodes (Accounts)
+WITH value.nodes AS nodes
 UNWIND nodes AS node
 MERGE (a:Account {address: node.address})
 SET a.name_tag = node.name_tag,
-    a.label = coalesce(node.label, 'unknown')
-// Now create relationships (TRANSACTION)
-WITH edges
+    a.label = coalesce(node.label, 'unknown');
+
+//load edges
+CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/moneylaundering.json") YIELD value
+WITH value.edges AS edges
 UNWIND edges AS edge
 MATCH (from:Account {address: edge.from})
 MATCH (to:Account {address: edge.to})
@@ -29,6 +30,7 @@ SET t.value = toInteger(edge.value),
     t.isError = toInteger(edge.isError),
     t.gasPrice = toInteger(edge.gasPrice),
     t.gasUsed = toInteger(edge.gasUsed);
+
 ```
 
 # old import not used!
