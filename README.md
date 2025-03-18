@@ -32,6 +32,17 @@ SET t.value = toInteger(edge.value),
     t.gasUsed = toInteger(edge.gasUsed);
 
 ```
+set in degree and out degree
+
+```cypher
+MATCH (n:Account)
+OPTIONAL MATCH (n)<-[inRel:TRANSACTION]-()
+OPTIONAL MATCH (n)-[outRel:TRANSACTION]->()
+WITH n, count(inRel) AS inDegree, count(outRel) AS outDegree
+SET n.inDegree = inDegree, n.outDegree = outDegree
+RETURN n
+
+```
 
 # old import not used!
 
@@ -62,14 +73,4 @@ SET t.value = toInteger(row.value),
 
 ```
 
-set in degree and out degree
 
-```cypher
-MATCH (n:Account)
-OPTIONAL MATCH (n)<-[inRel:TRANSACTION]-()
-OPTIONAL MATCH (n)-[outRel:TRANSACTION]->()
-WITH n, count(inRel) AS inDegree, count(outRel) AS outDegree
-SET n.inDegree = inDegree, n.outDegree = outDegree
-RETURN n
-
-```
