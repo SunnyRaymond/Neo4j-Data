@@ -1,0 +1,76 @@
+{
+  "node_attrs": [
+    {
+      "name": "address",
+      "type": "id",
+      "data_type": "string"
+    },
+    {
+      "name": "name_tag",
+      "type": "cate",
+      "data_type": "string",
+      "options": [
+        "ml_transit_2",
+        "ml_transit_3",
+        "Uniswap V3: ETHA-USDC",
+        "Uniswap V3: WFIL-USDC",
+        "Uniswap V3: FEI-USDC",
+        "OKEx"
+      ]
+    },
+    {
+      "name": "label",
+      "type": "cate",
+      "data_type": "string",
+      "options": ["heist", "unknown", "dex_defi", "Accounts,Writer"]
+    }
+  ],
+  "edge_attrs": [
+    {
+      "name": "hash",
+      "type": "id",
+      "data_type": "string"
+    },
+    {
+      "name": "value",
+      "type": "num",
+      "data_type": "string"
+    },
+    {
+      "name": "timeStamp",
+      "type": "num",
+      "data_type": "int"
+    },
+    {
+      "name": "blockNumber",
+      "type": "num",
+      "data_type": "int"
+    },
+    {
+      "name": "tokenSymbol",
+      "type": "cate",
+      "data_type": "string",
+      "options": ["KCS", "UOS", "SLP"]
+    },
+    {
+      "name": "contractAddress",
+      "type": "id",
+      "data_type": "string"
+    },
+    {
+      "name": "isError",
+      "type": "num",
+      "data_type": "int"
+    },
+    {
+      "name": "gasPrice",
+      "type": "num",
+      "data_type": "int"
+    },
+    {
+      "name": "gasUsed",
+      "type": "num",
+      "data_type": "int"
+    }
+  ]
+}

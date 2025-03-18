@@ -13,43 +13,36 @@ def convert_graph_to_json(G):
     Convert the NetworkX graph to a JSON structure with:
       - nodes: { "id": int, "name": string }
       - edges: { "source": int, "target": int, "value": int }
+    This function builds a mapping for node keys to new integer ids.
     """
     nodes = []
     edges = []
     
-    # Process nodes: ensure id is int and use the 'label' as name
+    # Create a mapping from each node key to a new integer id.
+    node_id_mapping = {}
+    next_id = 0
     for node, data in G.nodes(data=True):
-        node_id = data.get("id")
-        if node_id is None:
-            # If id attribute is missing, try to use the node key
+        # If the node data has an 'id' that can be converted, use it.
+        if "id" in data:
             try:
-                node_id = int(node)
+                int_id = int(data["id"])
             except ValueError:
-                continue
+                int_id = next_id
+                next_id += 1
         else:
-            try:
-                node_id = int(node_id)
-            except ValueError:
-                pass
-        # Use 'label' as the node's name; if missing, default to an empty string.
-        name = data.get("label", "")
-        nodes.append({"id": node_id, "name": name})
+            int_id = next_id
+            next_id += 1
+        
+        node_id_mapping[node] = int_id
+        # Use the 'label' attribute as the name; if missing, use the node key.
+        name = data.get("label", str(node))
+        nodes.append({"id": int_id, "name": name})
     
-    # Process edges: get integer source, target and weight ('value')
+    # Process edges: use the mapping to assign integer ids to source and target.
     for source, target, data in G.edges(data=True):
-        # Retrieve the node id for source and target from the node attributes
-        source_id = G.nodes[source].get("id", source)
-        target_id = G.nodes[target].get("id", target)
-        try:
-            source_id = int(source_id)
-        except ValueError:
-            pass
-        try:
-            target_id = int(target_id)
-        except ValueError:
-            pass
-
-        # Get the edge 'value', defaulting to 1 if not present
+        source_id = node_id_mapping[source]
+        target_id = node_id_mapping[target]
+        # Get the edge 'value'; default to 1 if not present.
         edge_value = data.get("value", 1)
         try:
             edge_value = int(edge_value)
