@@ -6,6 +6,16 @@
       "data_type": "int"
     },
     {
+      "name": "inDegree",
+      "type": "num",
+      "data_type": "int"
+    },
+    {
+      "name": "outDegree",
+      "type": "num",
+      "data_type": "int"
+    },
+    {
       "name": "name",
       "type": "cate",
       "data_type": "string",
