@@ -1,0 +1,79 @@
+{
+  "node_attrs": [
+    {
+      "name": "id",
+      "type": "id",
+      "data_type": "int"
+    },
+    {
+      "name": "name",
+      "type": "id",
+      "data_type": "string"
+    },
+    {
+      "name": "UuidFileMd5",
+      "type": "cate",
+      "data_type": "int",
+      "options": [0, 1, 2, 3]
+    },
+    {
+      "name": "inDegree",
+      "type": "num",
+      "data_type": "int"
+    },
+    {
+      "name": "outDegree",
+      "type": "num",
+      "data_type": "int"
+    }
+  ],
+  "edge_attrs": [
+    {
+      "name": "Index",
+      "type": "id",
+      "data_type": "int"
+    },
+    {
+      "name": "UuidFileMd5",
+      "type": "cate",
+      "data_type": "int",
+      "options": [0, 1, 2, 3]
+    },
+    {
+      "name": "Caller",
+      "type": "id",
+      "data_type": "string"
+    },
+    {
+      "name": "Callee",
+      "type": "id",
+      "data_type": "string"
+    },
+    {
+      "name": "Argc",
+      "type": "num",
+      "data_type": "int"
+    },
+    {
+      "name": "Argv",
+      "type": "id",
+      "data_type": "string"
+    },
+    {
+      "name": "Return",
+      "type": "id",
+      "data_type": "string"
+    },
+    {
+      "name": "Type",
+      "type": "cate",
+      "data_type": "string",
+      "options": ["original", "summary"]
+    },
+    {
+      "name": "EdgeNum",
+      "type": "num",
+      "data_type": "int"
+    }
+  ]
+}
