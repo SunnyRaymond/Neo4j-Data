@@ -2,44 +2,55 @@ import csv
 import json
 
 def load_edges_and_nodes(csv_filename):
-    nodes_set = set()
+    nodes_dict = {}  # key: node name, value: dict with keys "name" and "UuidFileMd5"
     edges = []
     
     with open(csv_filename, mode='r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            # Get node names from Caller and Callee columns
-            caller = row.get("Caller")
-            callee = row.get("Callee")
-            if caller:
-                nodes_set.add(caller)
-            if callee:
-                nodes_set.add(callee)
-            
-            # Process edge attributes: ignore UuidFileMd5
+            # Process edge attributes; keep all columns as they appear
+            # Convert numeric fields when possible.
             try:
-                index_val = int(row.get("Index"))
+                index_val = int(row.get("Index", "").strip() or 0)
             except (ValueError, TypeError):
                 index_val = None
-            
+
             try:
-                argc_val = int(row.get("Argc"))
+                argc_val = int(row.get("Argc", "").strip() or 0)
             except (ValueError, TypeError):
                 argc_val = None
 
-            # Argv and Return remain as strings (default to empty string if missing)
+            # We'll leave Argv, Return, Type, and EdgeNum as strings (or as-is)
             edge = {
-                "Caller": caller,
-                "Callee": callee,
                 "Index": index_val,
+                "UuidFileMd5": row.get("UuidFileMd5", "").strip(),
+                "Caller": row.get("Caller", "").strip(),
+                "Callee": row.get("Callee", "").strip(),
                 "Argc": argc_val,
-                "Argv": row.get("Argv", ""),
-                "Return": row.get("Return", "")
+                "Argv": row.get("Argv", "").strip(),
+                "Return": row.get("Return", "").strip(),
+                "Type": row.get("Type", "").strip(),
+                "EdgeNum": row.get("EdgeNum", "").strip()
             }
             edges.append(edge)
+            
+            # Update nodes dictionary for Caller and Callee.
+            # For each node, if not seen before, store the node name and its UuidFileMd5 from the row.
+            caller = edge["Caller"]
+            callee = edge["Callee"]
+            uuid_val = edge["UuidFileMd5"]
+            if caller and caller not in nodes_dict:
+                nodes_dict[caller] = {"name": caller, "UuidFileMd5": uuid_val}
+            if callee and callee not in nodes_dict:
+                nodes_dict[callee] = {"name": callee, "UuidFileMd5": uuid_val}
     
-    # Create node objects with unique names
-    nodes = [{"name": name} for name in sorted(nodes_set)]
+    # Now assign each node a unique id starting from 0.
+    nodes = []
+    for idx, node_name in enumerate(sorted(nodes_dict.keys())):
+        node_data = nodes_dict[node_name]
+        node_data["id"] = idx
+        nodes.append(node_data)
+    
     return nodes, edges
 
 def main():
