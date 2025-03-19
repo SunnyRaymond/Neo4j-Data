@@ -159,8 +159,8 @@ WITH value.edges AS edges
 UNWIND edges AS edge
 MATCH (source:Function {name: edge.Caller})
 MATCH (target:Function {name: edge.Callee})
-MERGE (source)-[r:CALL]->(target)
-SET r.index = toInteger(edge.Index),
+MERGE (source)-[r:CALL {edgeId: toInteger(edge.Index)}]->(target)
+SET r.Index = toInteger(edge.Index),
     r.Argc = toInteger(edge.Argc),
     r.Argv = edge.Argv,
     r.Return = edge.Return;
