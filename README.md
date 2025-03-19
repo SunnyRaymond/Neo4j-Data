@@ -8,23 +8,27 @@
 ### Steps
 
 1. **Download and Install Neo4j Desktop:**
+
    - Visit the [Neo4j Download Page](https://neo4j.com/download/) and download **Neo4j Desktop**.
    - Follow the installation instructions provided for your operating system.
    - Register using your student email for a free passkey.
 
 2. **Create a New Project and Database:**
+
    - Open Neo4j Desktop.
-   - Click **"New Project"** and give it a name (e.g., *Graph Query Project*).
+   - Click **"New Project"** and give it a name (e.g., _Graph Query Project_).
    - Inside the project, click **"Add Database"** and select **"Local DBMS"**.
    - Provide a name for your database and set a password (default username is `neo4j`).
    - Click **"Create"** to set up the database.
 
 3. **Install the APOC Plugin:**
+
    - Click your new database, click the **"Plugins"** tab.
    - Find and install the **APOC** plugin.
    - Restart the database if prompted to apply the changes.
 
 4. **Start the Database:**
+
    - In your project dashboard, click the **"Start"** button for your new database.
    - Once started, click **"Open"** to launch the Neo4j Browser.
    - You can access the browser at `http://localhost:7474`.
@@ -33,10 +37,18 @@
    - Use the Neo4j Browser to run your import queries.
    - For now, use the attached code to import data from CSV files. (Later, you will update the queries to use JSON after your work is done.)
 
-
 ---
+
 ## Load Data for moneylaundering
+
+to reload data, first delete everything through the below command:
+
+```cypher
+MATCH (n) DETACH DELETE n;
+```
+
 nodes
+
 ```cypher
 CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/moneylaundering.json") YIELD value
 WITH value.nodes AS nodes
@@ -46,7 +58,9 @@ SET a.name_tag = node.name_tag,
     a.label = coalesce(node.label, 'unknown');
 
 ```
+
 edges
+
 ```cypher
 CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/moneylaundering.json") YIELD value
 WITH value.edges AS edges
@@ -65,7 +79,9 @@ SET t.value = toInteger(edge.value),
 
 
 ```
+
 set in degree and out degree
+
 ```cypher
 MATCH (n:Account)
 OPTIONAL MATCH (n)<-[inRel:TRANSACTION]-()
@@ -77,7 +93,9 @@ RETURN n
 ```
 
 ## Load Data for Miserable
+
 nodes
+
 ```cypher
 // Load JSON file from URL (adjust the URL accordingly)
 CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/lesmiserables.json") YIELD value
@@ -88,7 +106,9 @@ SET c.name = node.name;
 
 
 ```
+
 edges
+
 ```cypher
 // Load JSON file from URL (adjust the URL accordingly)
 CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/lesmiserables.json") YIELD value
@@ -101,7 +121,9 @@ SET r.value = toInteger(edge.value);
 
 
 ```
+
 set in degree and out degree
+
 ```cypher
 MATCH (c:Character)
 OPTIONAL MATCH (c)<-[inRel:RELATIONSHIP]-()
@@ -112,10 +134,13 @@ RETURN c;
 
 
 ```
+
 ### Load data done!
+
 ---
 
 ## Updating index.js
+
 Change the neo4jDriver in index.js according to the port your neo4j is running and your username and password.
 
 ```javascript
@@ -131,7 +156,8 @@ Make sure your backend uses the same connection URL and credentials as your loca
 
 ## Troubleshooting
 
-- **Database Fails to Start:**  
+- **Database Fails to Start:**
+
   - For Neo4j Desktop, check the logs available in the Desktop application.
   - For Docker, run `docker logs neo4j` in your terminal to inspect container logs.
 
@@ -146,21 +172,22 @@ Make sure your backend uses the same connection URL and credentials as your loca
 
 ---
 
-
-
 bug solved
+
 1. != dont work, as neo4j use <> for not equal, now working
 2. the edge.value is stored as string in database, which make it unable to use >/<, changed the database so it now consider it as a int
-3. use BID as unique identifier, as cypher dont support - replace _
+3. use BID as unique identifier, as cypher dont support - replace \_
 4. duplicate of nodes-solved using id(n1)<>id(n2)
 
 frontend bug
+
 1. give the same attribute multiple limit dont work, like name_tag != ml_transit_3 and name_tag != ml_transit_1, only later will show in the final_query
-2. address should be considered as a string as it is stored in hex format, and the nature of address means it's no use to perform >/< on address, so address should only have = and != option. also address's input box should be string format and not int format. currently when i input in address like 0x1d8224b798e29f98379ab429aa716cdfe320c784	i got 1e-17 sth like this,
+2. address should be considered as a string as it is stored in hex format, and the nature of address means it's no use to perform >/< on address, so address should only have = and != option. also address's input box should be string format and not int format. currently when i input in address like 0x1d8224b798e29f98379ab429aa716cdfe320c784 i got 1e-17 sth like this,
 3. same problem as 2 in edge.hash, should treat as string
 4. same problem as 2 in edge.isError
 
 need to do:
+
 1. add degree/ in degree/ out degree in database, rmb to consider colloct motif DONE
 2. modify csv into a whole json so the whole imported once. for all 4 datasets, and generate graph info for the 4 before weds
 3. modify the index.js so can query the 4 seperately. use different endpoints for different datasets. create seperate neo4j instance for the 4.
