@@ -144,7 +144,7 @@ RETURN c;
 nodes
 
 ```cypher
-CALL apoc.load.json("https://your-url/funcall.json") YIELD value
+CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/funcall.json") YIELD value
 WITH value.nodes AS nodes
 UNWIND nodes AS node
 MERGE (n:Function {id: node.id})
@@ -157,7 +157,7 @@ SET n.name = node.name,
 edges
 
 ```cypher
-CALL apoc.load.json("https://your-url/funcall.json") YIELD value
+CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/funcall.json") YIELD value
 WITH value.edges AS edges
 UNWIND edges AS edge
 MATCH (caller:Function {name: edge.Caller})
