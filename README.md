@@ -157,10 +157,10 @@ edges
 CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/funcall.json") YIELD value
 WITH value.edges AS edges
 UNWIND edges AS edge
-MATCH (source:Function {name: edge.caller})
-MATCH (target:Function {name: edge.callee})
+MATCH (source:Function {name: edge.Caller})
+MATCH (target:Function {name: edge.Callee})
 MERGE (source)-[r:CALL]->(target)
-SET r.index = toInteger(edge.index),
+SET r.index = toInteger(edge.Index),
     r.Argc = toInteger(edge.Argc),
     r.Argv = edge.Argv,
     r.Return = edge.Return;
