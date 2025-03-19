@@ -8,8 +8,7 @@ def load_edges_and_nodes(csv_filename):
     with open(csv_filename, mode='r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            # Process edge attributes; keep all columns as they appear
-            # Convert numeric fields when possible.
+            # Process edge attributes; convert numeric fields.
             try:
                 index_val = int(row.get("Index", "").strip() or 0)
             except (ValueError, TypeError):
@@ -20,25 +19,33 @@ def load_edges_and_nodes(csv_filename):
             except (ValueError, TypeError):
                 argc_val = None
 
-            # We'll leave Argv, Return, Type, and EdgeNum as strings (or as-is)
+            try:
+                uuid_val = int(row.get("UuidFileMd5", "").strip() or 0)
+            except (ValueError, TypeError):
+                uuid_val = None
+
+            try:
+                edge_num = int(row.get("EdgeNum", "").strip() or 0)
+            except (ValueError, TypeError):
+                edge_num = None
+
             edge = {
                 "Index": index_val,
-                "UuidFileMd5": row.get("UuidFileMd5", "").strip(),
+                "UuidFileMd5": uuid_val,
                 "Caller": row.get("Caller", "").strip(),
                 "Callee": row.get("Callee", "").strip(),
                 "Argc": argc_val,
                 "Argv": row.get("Argv", "").strip(),
                 "Return": row.get("Return", "").strip(),
                 "Type": row.get("Type", "").strip(),
-                "EdgeNum": row.get("EdgeNum", "").strip()
+                "EdgeNum": edge_num
             }
             edges.append(edge)
             
             # Update nodes dictionary for Caller and Callee.
-            # For each node, if not seen before, store the node name and its UuidFileMd5 from the row.
             caller = edge["Caller"]
             callee = edge["Callee"]
-            uuid_val = edge["UuidFileMd5"]
+            # Use the UuidFileMd5 from the row for both nodes (first occurrence wins)
             if caller and caller not in nodes_dict:
                 nodes_dict[caller] = {"name": caller, "UuidFileMd5": uuid_val}
             if callee and callee not in nodes_dict:

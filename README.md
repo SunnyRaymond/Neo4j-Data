@@ -144,37 +144,46 @@ RETURN c;
 nodes
 
 ```cypher
-CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/funcall.json") YIELD value
+CALL apoc.load.json("https://your-url/funcall.json") YIELD value
 WITH value.nodes AS nodes
 UNWIND nodes AS node
-MERGE (f:Function {name: node.name})
-SET f.name = node.name;
+MERGE (n:Function {id: node.id})
+SET n.name = node.name,
+    n.UuidFileMd5 = toInteger(node.UuidFileMd5);
+
+
 ```
 
 edges
 
 ```cypher
-CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/funcall.json") YIELD value
+CALL apoc.load.json("https://your-url/funcall.json") YIELD value
 WITH value.edges AS edges
 UNWIND edges AS edge
-MATCH (source:Function {name: edge.Caller})
-MATCH (target:Function {name: edge.Callee})
-MERGE (source)-[r:CALL {edgeId: toInteger(edge.Index)}]->(target)
-SET r.Index = toInteger(edge.Index),
+MATCH (caller:Function {name: edge.Caller})
+MATCH (callee:Function {name: edge.Callee})
+MERGE (caller)-[r:CALL {Index: edge.Index}]->(callee)
+SET r.UuidFileMd5 = toInteger(edge.UuidFileMd5),
     r.Argc = toInteger(edge.Argc),
     r.Argv = edge.Argv,
-    r.Return = edge.Return;
+    r.Return = edge.Return,
+    r.Type = edge.Type,
+    r.EdgeNum = toInteger(edge.EdgeNum);
+
+
 ```
 
 set in degree and out degree
 
 ```cypher
-MATCH (f:Function)
-OPTIONAL MATCH (f)<-[inRel:CALL]-()
-OPTIONAL MATCH (f)-[outRel:CALL]->()
-WITH f, count(inRel) AS inDegree, count(outRel) AS outDegree
-SET f.inDegree = inDegree, f.outDegree = outDegree
-RETURN f;
+MATCH (n:Function)
+OPTIONAL MATCH (n)<-[inRel:CALL]-()
+OPTIONAL MATCH (n)-[outRel:CALL]->()
+WITH n, count(inRel) AS inDegree, count(outRel) AS outDegree
+SET n.inDegree = inDegree, n.outDegree = outDegree
+RETURN n;
+
+
 ```
 
 ### Load data done!
