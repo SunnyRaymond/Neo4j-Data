@@ -94,6 +94,8 @@ RETURN n
 
 ## Load Data for Miserable
 
+# do create a seperate database for this, better called miserable or otherwise you have to change the index.js code!
+
 nodes
 
 ```cypher
@@ -133,6 +135,46 @@ SET c.inDegree = inDegree, c.outDegree = outDegree
 RETURN c;
 
 
+```
+
+## Load Data for funcall
+
+# do create a seperate database for this, better called funcall or otherwise you have to change the index.js code!
+
+nodes
+
+```cypher
+CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/funcall.json") YIELD value
+WITH value.nodes AS nodes
+UNWIND nodes AS node
+MERGE (f:Function {name: node.name})
+SET f.name = node.name;
+```
+
+edges
+
+```cypher
+CALL apoc.load.json("https://raw.githubusercontent.com/SunnyRaymond/Neo4j-Data/refs/heads/main/funcall.json") YIELD value
+WITH value.edges AS edges
+UNWIND edges AS edge
+MATCH (source:Function {name: edge.caller})
+MATCH (target:Function {name: edge.callee})
+MERGE (source)-[r:CALL]->(target)
+SET r.index = toInteger(edge.index),
+    r.Argc = toInteger(edge.Argc),
+    r.Argv = edge.Argv,
+    r.Return = edge.Return;
+```
+
+set in degree and out degree
+
+```cypher
+MATCH (f:Function)
+OPTIONAL MATCH (f)<-[inRel:CALL]-()
+OPTIONAL MATCH (f)-[outRel:CALL]->()
+WITH f, count(inRel) AS inDegree, count(outRel) AS outDegree
+SET f.inDegree = inDegree, f.outDegree = outDegree
+RETURN f;
 ```
 
 ### Load data done!
